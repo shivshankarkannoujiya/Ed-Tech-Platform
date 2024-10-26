@@ -31,9 +31,13 @@ const createCourse = asyncHandler(async (req, res) => {
     }
 
     //TODO: Check for instruction
-    const userId = req.user._id; //? may occure error : use -> id instead _id
+    const userId = req.user.id;
     const instructorDetails = await User.findById({ userId });
     console.log("InstructorDetails", instructorDetails);
+    /* 
+    TODO:
+    Verify that userId and instructorDetails._id are same or different
+    */
 
     if (!instructorDetails) {
         throw new ApiError(404, "Instructor Details not found !!");
@@ -88,6 +92,28 @@ const createCourse = asyncHandler(async (req, res) => {
         .json(200, newCourse, "Course Created Successfully !!");
 });
 
+const getAllCourses = asyncHandler(async (req, res) => {
+    const allCourses = await Course.find(
+        {},
+        {
+            courseName: true,
+            price: true,
+            thumbnail: true,
+            instructor: true,
+            ratingAndReviews: true,
+            studentsEnrolled: true,
+        }
+    );
 
+    return res
+        .status(200)
+        .json(
+            new APiResponse(
+                200,
+                allCourses,
+                "Fetched all Courses Successfully !!"
+            )
+        );
+});
 
-export { createCourse };
+export { createCourse, getAllCourses };
