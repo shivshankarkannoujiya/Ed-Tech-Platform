@@ -119,7 +119,15 @@ const signUpUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid OTP !!");
     }
 
-    // profile
+    //TODO: profile
+    /* 
+        1. we have created fake profile, So,
+        2. if we create profile then update kr denge 
+
+        ?Agar fake profile nhi create krenge then we have to do,
+            1. create profile 
+            2. push the profile id into the User model
+    */
     const profileDetatils = await Profile.create({
         gender: null,
         dateOfBirth: null,
