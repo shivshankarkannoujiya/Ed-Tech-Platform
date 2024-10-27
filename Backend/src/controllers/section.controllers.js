@@ -71,6 +71,8 @@ const deleteSection = asyncHandler(async (req, res) => {
     }
     const deleteSection = await Section.findByIdAndDelete({ sectionId });
 
+    // TODO: Do we need to remove {id} entry from the Schema
+
     return res
         .status(200)
         .json(
