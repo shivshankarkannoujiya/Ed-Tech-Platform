@@ -30,7 +30,7 @@ const createCourse = asyncHandler(async (req, res) => {
         throw new ApiError(400, "thumbnail is required !!");
     }
 
-    //TODO: Check for instruction
+    //TODO: Check for instructor
     const userId = req.user.id;
     const instructorDetails = await User.findById({ userId });
     console.log("InstructorDetails", instructorDetails);
