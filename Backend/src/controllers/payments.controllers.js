@@ -133,6 +133,4 @@ const verifySignature = asyncHandler(async (req, res) => {
         );
 });
 
-
-
 export { capturePayment, verifySignature };
