@@ -79,12 +79,60 @@ const verifySignature = asyncHandler(async (req, res) => {
     }
 
     /*
-        Authorized
+        if => Authorized
         TODO:
         Action: Enroll the Student in Course
             1. User -> courses -> ObjectId(particular course)
             2. Course -> studentEnrolled -> usedId(Object Id)
     */
+
+    const { courseId, userId } = req.body.payload.payment.entity.notes;
+
+    //TODO:
+    // Action: find the course and enroll the student in it.
+    const enrolledCourse = await Course.findOneAndUpdate(
+        { _id: courseId },
+        { $push: { studentsEnrolled: userId } },
+        { new: true }
+    );
+
+    if (!enrolledCourse) {
+        throw new ApiError(500, "Course Not found !!");
+    }
+    console.log(enrolledCourse);
+
+    // TODO:
+    // find the student and add the course in their enrolledCourse
+    const enrrolledStudent = await User.findOneAndUpdate(
+        { _id: userId },
+        { $push: { courses: courseId } },
+        { new: true }
+    );
+
+    if (!enrrolledStudent) {
+        throw new ApiError(500, "Student not found !!");
+    }
+
+    // TODO:
+    // sendMail of enrollement
+    // Attach template
+    const emailResponse = await mailSender(
+        enrrolledStudent.email,
+        "Congratulation from ed-Tech",
+        "Congratulation you are onboarded into new ed-Tech Course"
+    );
+    console.log("emailResponse", emailResponse);
+
+    return res
+        .status(200)
+        .json(
+            new APiResponse(
+                200,
+                "Signature verified and course Added Successfully !!"
+            )
+        );
 });
+
+
 
 export { capturePayment, verifySignature };
