@@ -92,7 +92,7 @@ const createCourse = asyncHandler(async (req, res) => {
         .json(200, newCourse, "Course Created Successfully !!");
 });
 
-const getAllCourses = asyncHandler(async (req, res) => {
+const getAllCourses = asyncHandler(async (_, res) => {
     const allCourses = await Course.find(
         {},
         {
@@ -116,4 +116,43 @@ const getAllCourses = asyncHandler(async (req, res) => {
         );
 });
 
-export { createCourse, getAllCourses };
+const getCourseDetails = asyncHandler(async (req, res) => {
+    const { courseId } = req.body;
+
+    const courseDetails = await Course.find(
+        { courseId }
+            .populate({
+                path: "instructor",
+                populate: {
+                    path: "additionalDetails",
+                },
+            })
+            .populate("category")
+            .populate("ratingAndReviews")
+            .populate({
+                path: "courseContent",
+                populate: {
+                    path: "subSection",
+                },
+            })
+            .exec()
+    );
+
+    if (!courseDetails) {
+        throw new ApiError(500, `could not find Course with: ${courseId} !!`);
+    }
+
+    return res
+        .status(200)
+        .json(
+            new APiResponse(
+                200,
+                courseDetails,
+                "Course details fetched successfully"
+            )
+        );
+});
+
+
+
+export { createCourse, getAllCourses, getCourseDetails };
