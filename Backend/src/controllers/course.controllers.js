@@ -138,8 +138,9 @@ const getCourseDetails = asyncHandler(async (req, res) => {
             .exec()
     );
 
+    // Validation
     if (!courseDetails) {
-        throw new ApiError(500, `could not find Course with: ${courseId} !!`);
+        throw new ApiError(400, `could not find Course with: ${courseId} !!`);
     }
 
     return res
